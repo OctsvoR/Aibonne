@@ -9,9 +9,6 @@ using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 using System.Linq;
 
-// todo:
-// 1. bikin orang jalan pergi
-// 2. bikin timer game
 
 public class Person : MonoBehaviour {
 
@@ -34,6 +31,8 @@ public class Person : MonoBehaviour {
 	public List<Person> proximities = new List<Person> ();
 	public List<Person> proximities_last = new List<Person> ();
 
+	public List<Edge> edges = new List<Edge> ();
+
 	void Start () {
 		speed = Random.Range (0.9f, 1f);
 
@@ -55,11 +54,21 @@ public class Person : MonoBehaviour {
 	}
 
 	void Update () {
-		//////////////
-		// Dragging //
-		//////////////
 		canBeDragged = !doApproach && !doLeave;
 
+		UpdateDragInput ();
+		UpdateScreenRestriction ();
+		UpdateBehaviour ();
+		UpdateBehaviourTimer ();
+		UpdateProximityDetection ();
+		
+
+		isProximity_last = isProximity;
+		canBeDragged_last = canBeDragged;
+		proximities_last = new List<Person> (proximities);
+	}
+
+	void UpdateDragInput () {
 		if (canBeDragged && isBeingDragged) {
 			Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
@@ -69,10 +78,9 @@ public class Person : MonoBehaviour {
 				transform.position.z
 			);
 		}
+	}
 
-		////////////////////////
-		// Screen Restriction //
-		////////////////////////
+	void UpdateScreenRestriction () {
 		if (canBeDragged) {
 			transform.position = new Vector3 (
 				Mathf.Clamp (transform.position.x, -5.107f, 5.107f),
@@ -80,10 +88,9 @@ public class Person : MonoBehaviour {
 				transform.position.z
 			);
 		}
+	}
 
-		//////////////////////////////////////
-		// Approaching Standpoint Behaviour //
-		//////////////////////////////////////
+	void UpdateBehaviour () {
 		if (doApproach) {
 			transform.position = Vector2.MoveTowards (
 				transform.position,
@@ -97,9 +104,6 @@ public class Person : MonoBehaviour {
 				doApproach = false;
 		}
 
-		//////////////////////////////////
-		// Leaving Standpoint Behaviour //
-		//////////////////////////////////
 		if (doLeave) {
 			transform.position = Vector2.MoveTowards (
 				transform.position,
@@ -115,10 +119,9 @@ public class Person : MonoBehaviour {
 
 			isBeingDragged = false;
 		}
+	}
 
-		///////////
-		// Timer //
-		///////////
+	void UpdateBehaviourTimer () {
 		if (isProximity || isBeingDragged)
 			timeToLeave_current = timeToLeave;
 
@@ -134,21 +137,10 @@ public class Person : MonoBehaviour {
 		if (canBeDragged != canBeDragged_last && canBeDragged == true) {
 			StartCoroutine (AlternateHeadingRoutine ());
 		}
+	}
 
-		////////////
-		// Events //
-		////////////
-		
-		if (isProximity != isProximity_last) {
-			if (isProximity)
-				PersonManager.Instance.onBecameProximity.Invoke ();
-		}
-
-		////////////
-		// Others //
-		////////////
-
-		//proximities.Clear ();
+	void UpdateProximityDetection () {
+		int numFound = 0;
 
 		for (int i = 0; i < PersonManager.Instance.slotList.Count; i++) {
 			Person otherPerson = PersonManager.Instance.slotList[i].person;
@@ -163,18 +155,23 @@ public class Person : MonoBehaviour {
 					if (canBeDragged && otherPerson.canBeDragged &&
 						!isBeingDragged && !otherPerson.isBeingDragged
 					) {
-						proximities.Add (PersonManager.Instance.slotList[i].person);
+						numFound++;
+
+						if (numFound > proximities.Count) {
+							proximities.Add (PersonManager.Instance.slotList[i].person);
+
+							Edge edge = new Edge (this, otherPerson);
+							edges.Add (edge);
+						}
+
 						isProximity = true;
 					}
 				} else {
 					proximities.Remove (PersonManager.Instance.slotList[i].person);
+					// TODO: Create edge removal.
 				}
 			}
 		}
-
-		isProximity_last = isProximity;
-		canBeDragged_last = canBeDragged;
-		proximities_last = new List<Person> (proximities);
 	}
 
 	IEnumerator AlternateHeadingRoutine () {

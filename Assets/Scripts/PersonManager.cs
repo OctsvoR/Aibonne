@@ -27,19 +27,6 @@ public class PersonManager : MonoBehaviour {
 	public Canvas warningCanvas;
 	public Button warningPrefab;
 
-	public UnityEvent onBecameProximity = new UnityEvent ();
-
-	public class Edge {
-
-		public Person from;
-		public Person to;
-
-		public Edge (Person from, Person to) {
-			this.from = from;
-			this.to = to;
-		}
-	}
-
 	int personNumbering;
 
 	void Awake () {

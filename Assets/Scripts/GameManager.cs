@@ -22,6 +22,16 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	void Update () {
+		UpdateGameTimer ();
+		UpdateUI ();
+	}
+
+	void EndGame () {
+		Time.timeScale = 0f;
+		endGameCanvas.gameObject.SetActive (true);
+	}
+
+	void UpdateGameTimer () {
 		timer_current -= Time.deltaTime;
 
 		if (timer_current <= 0f) {
@@ -29,12 +39,9 @@ public class GameManager : MonoBehaviour {
 
 			timer_current = 0f;
 		}
-
-		timerText.text = (int)timer_current + "s";
 	}
 
-	void EndGame () {
-		Time.timeScale = 0f;
-		endGameCanvas.gameObject.SetActive (true);
+	void UpdateUI () {
+		timerText.text = (int)timer_current + "s";
 	}
 }
