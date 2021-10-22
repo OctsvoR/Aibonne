@@ -140,10 +140,13 @@ public class Person : MonoBehaviour {
 	}
 
 	void UpdateProximityDetection () {
-		int numFound = 0;
+		//int numFound = 0;
 
-		for (int i = 0; i < PersonManager.Instance.slotList.Count; i++) {
-			Person otherPerson = PersonManager.Instance.slotList[i].person;
+		proximities.Clear ();
+		edges.Clear ();
+
+		for (int i = 0; i < PersonManager.Instance.slots.Count; i++) {
+			Person otherPerson = PersonManager.Instance.slots[i].person;
 
 			if (otherPerson && otherPerson != this) {
 				float dist = Vector2.Distance (
@@ -155,20 +158,25 @@ public class Person : MonoBehaviour {
 					if (canBeDragged && otherPerson.canBeDragged &&
 						!isBeingDragged && !otherPerson.isBeingDragged
 					) {
-						numFound++;
+						//numFound++;
 
-						if (numFound > proximities.Count) {
-							proximities.Add (PersonManager.Instance.slotList[i].person);
+						//if (numFound > proximities.Count) {
+							proximities.Add (PersonManager.Instance.slots[i].person);
 
 							Edge edge = new Edge (this, otherPerson);
 							edges.Add (edge);
-						}
+						//}
 
 						isProximity = true;
 					}
 				} else {
-					proximities.Remove (PersonManager.Instance.slotList[i].person);
-					// TODO: Create edge removal.
+					//proximities.Remove (PersonManager.Instance.slotList[i].person);
+
+					//for (int j = 0; j < edges.Count; j++) {
+					//	if (edges[j].to == PersonManager.Instance.slotList[i].person) {
+					//		edges.Remove (edges[j]);
+					//	}
+					//}
 				}
 			}
 		}
