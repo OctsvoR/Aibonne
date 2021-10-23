@@ -40,11 +40,11 @@ public class PersonManager : MonoBehaviour {
 		GenerateSlots (9);
 
 		StartCoroutine (ResetProximityFlagRoutine ());
-		StartCoroutine (SpawnPersonRoutine ());
+		//StartCoroutine (SpawnPersonRoutine ());
 
 		//onBecameProximity.AddListener (() => { print ("x"); });
 	}
-	
+
 	void Update () {
 		CalculateProximities ();
 
@@ -53,6 +53,18 @@ public class PersonManager : MonoBehaviour {
 			if (slots[i].person) {
 				edges = edges.Union (slots[i].person.edges).ToList ();
 			}
+		}
+
+		for (int i = 0; i < edges.Count - 1; i++) {
+			for (int j = i + 1; j < edges.Count; j++) {
+				if (edges[i].from == edges[j].to && edges[i].to == edges[j].from) {
+					edges.RemoveAt (j);
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			SpawnPerson ();
 		}
 	}
 
@@ -72,7 +84,7 @@ public class PersonManager : MonoBehaviour {
 
 			Person person = Instantiate (
 				personPrefab,
-				new Vector3 (-5.605f, floor == 0 ? -1.595f : 0.845f, 0f),
+				new Vector3 (-5.605f, floor == 0 ? -1.595f : -1.595f/*0.845f*/, 0f),
 				Quaternion.identity
 			);
 

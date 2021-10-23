@@ -36,7 +36,7 @@ public class Person : MonoBehaviour {
 	void Start () {
 		speed = Random.Range (0.9f, 1f);
 
-		int skin = Random.Range (1, 1 + sprites.Count);
+		int skin = Random.Range (1, sprites.Count);
 		for (int i = 0; i < sprites.Count; i++) {
 			sprites[i].SetActive (i == skin);
 		}
@@ -161,10 +161,10 @@ public class Person : MonoBehaviour {
 						//numFound++;
 
 						//if (numFound > proximities.Count) {
-							proximities.Add (PersonManager.Instance.slots[i].person);
+						proximities.Add (PersonManager.Instance.slots[i].person);
 
-							Edge edge = new Edge (this, otherPerson);
-							edges.Add (edge);
+						Edge edge = new Edge (this, otherPerson);
+						edges.Add (edge);
 						//}
 
 						isProximity = true;
