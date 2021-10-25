@@ -158,27 +158,25 @@ public class Person : MonoBehaviour {
 					if (canBeDragged && otherPerson.canBeDragged &&
 						!isBeingDragged && !otherPerson.isBeingDragged
 					) {
-						//numFound++;
-
-						//if (numFound > proximities.Count) {
-						proximities.Add (PersonManager.Instance.slots[i].person);
-
-						Edge edge = new Edge (this, otherPerson);
-						edges.Add (edge);
-						//}
+						if (otherPerson.proximities.Count > 0) {
+							for (int j = 0; j < otherPerson.proximities.Count; j++) {
+								if (otherPerson.proximities[j] != this) {
+									proximities.Add (PersonManager.Instance.slots[i].person);
+								}
+							}
+						} else {
+							proximities.Add (PersonManager.Instance.slots[i].person);
+						}
 
 						isProximity = true;
 					}
-				} else {
-					//proximities.Remove (PersonManager.Instance.slotList[i].person);
-
-					//for (int j = 0; j < edges.Count; j++) {
-					//	if (edges[j].to == PersonManager.Instance.slotList[i].person) {
-					//		edges.Remove (edges[j]);
-					//	}
-					//}
 				}
 			}
+		}
+
+		for (int i = 0; i < proximities.Count; i++) {
+			Edge edge = new Edge (this, proximities[i]);
+			edges.Add (edge);
 		}
 	}
 

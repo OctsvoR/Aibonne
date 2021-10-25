@@ -29,6 +29,7 @@ public class PersonManager : MonoBehaviour {
 	public Button warningPrefab;
 
 	public List<Edge> edges;
+	public List<Edge> edges_last;
 
 	int personNumbering;
 
@@ -41,8 +42,6 @@ public class PersonManager : MonoBehaviour {
 
 		StartCoroutine (ResetProximityFlagRoutine ());
 		//StartCoroutine (SpawnPersonRoutine ());
-
-		//onBecameProximity.AddListener (() => { print ("x"); });
 	}
 
 	void Update () {
@@ -55,13 +54,17 @@ public class PersonManager : MonoBehaviour {
 			}
 		}
 
-		for (int i = 0; i < edges.Count - 1; i++) {
-			for (int j = i + 1; j < edges.Count; j++) {
-				if (edges[i].from == edges[j].to && edges[i].to == edges[j].from) {
-					edges.RemoveAt (j);
-				}
-			}
-		}
+		//for (int i = 0; i < edges.Count - 1; i++) {
+		//	for (int j = i + 1; j < edges.Count; j++) {
+		//		if (edges[i].from == edges[j].to && edges[i].to == edges[j].from) {
+		//			edges.RemoveAt (j);
+		//		}
+		//	}
+		//}
+
+		//for (int i = 0; i < edges.Count; i++) {
+		//	Button warning = Instantiate (warningPrefab, Vector3.zero, Quaternion.identity);
+		//}
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			SpawnPerson ();
