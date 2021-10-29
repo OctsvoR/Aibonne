@@ -26,10 +26,11 @@ public class PersonManager : MonoBehaviour {
 	public List<Slot> slots;
 
 	public Canvas warningCanvas;
-	public Button warningPrefab;
+	public Warning warningPrefab;
 
-	public List<Edge> edges;
-	public List<Edge> edges_last;
+	public List<Edge> edges = new List<Edge> ();
+
+	public List<Warning> warnings = new List<Warning> ();
 
 	int personNumbering;
 
@@ -47,12 +48,32 @@ public class PersonManager : MonoBehaviour {
 	void Update () {
 		CalculateProximities ();
 
-		edges.Clear ();
+		if (edges.Count > 0)
+			edges.Clear ();
+
 		for (int i = 0; i < slots.Count; i++) {
 			if (slots[i].person) {
 				edges = edges.Union (slots[i].person.edges).ToList ();
 			}
 		}
+
+		if (warnings.Count < edges.Count) {
+			Warning warning = Instantiate (warningPrefab, Vector3.zero, Quaternion.identity);
+			warning.transform.SetParent (warningCanvas.transform);
+
+			warnings.Add (warning);
+
+			warnings[warnings.Count - 1].edge = edges[edges.Count - 1];
+			edges[edges.Count - 1].warning = warnings[warnings.Count - 1];
+		} else if (warnings.Count > edges.Count) {
+			Destroy (warnings[warnings.Count - 1].gameObject);
+			warnings.RemoveAt (warnings.Count - 1);
+		}
+
+		#region comment
+		//} else if (warnings.Count > edges.Count) {
+		//	warnings.rem
+		//}
 
 		//for (int i = 0; i < edges.Count - 1; i++) {
 		//	for (int j = i + 1; j < edges.Count; j++) {
@@ -65,8 +86,9 @@ public class PersonManager : MonoBehaviour {
 		//for (int i = 0; i < edges.Count; i++) {
 		//	Button warning = Instantiate (warningPrefab, Vector3.zero, Quaternion.identity);
 		//}
+		#endregion
 
-		if (Input.GetKeyDown (KeyCode.Space)) {
+		if(Input.GetKeyDown (KeyCode.Space)) {
 			SpawnPerson ();
 		}
 	}
@@ -144,8 +166,6 @@ public class PersonManager : MonoBehaviour {
 		//	}
 		//}
 	}
-
-	
 
 	IEnumerator ResetProximityFlagRoutine () {
 		for (; ; ) {

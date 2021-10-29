@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Serializable]
-public class Edge {
+public class Edge : MonoBehaviour{
 
 	public Person from;
 	public Person to;
 
-	//public Button warning;
+	public Warning warning;
 
 	public Edge (Person from, Person to) {
 		this.from = from;

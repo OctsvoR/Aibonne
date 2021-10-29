@@ -9,7 +9,6 @@ using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 using System.Linq;
 
-
 public class Person : MonoBehaviour {
 
 	public bool isBeingDragged;
@@ -62,8 +61,6 @@ public class Person : MonoBehaviour {
 		UpdateBehaviourTimer ();
 		UpdateProximityDetection ();
 		
-
-		isProximity_last = isProximity;
 		canBeDragged_last = canBeDragged;
 		proximities_last = new List<Person> (proximities);
 	}
