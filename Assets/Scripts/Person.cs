@@ -29,14 +29,7 @@ public class Person : MonoBehaviour {
 	public Warning warning;
 
 	void Start () {
-		speed = Random.Range (0.9f, 1f);
-
-		int skin = Random.Range (1, sprites.Count);
-		for (int i = 0; i < sprites.Count; i++) {
-			sprites[i].SetActive (i == skin);
-		}
-
-		timeToLeave_current = timeToLeave;
+		Init();
 	}
 
 	void OnMouseDown () {
@@ -55,16 +48,41 @@ public class Person : MonoBehaviour {
 		UpdateScreenRestriction ();
 		UpdateBehaviour ();
 		UpdateBehaviourTimer ();
+		UpdateProximityDetection();
+		UpdateWarningVisibility();
 
+		canBeDragged_last = canBeDragged;
+	}
+
+	void Init()
+	{
+		speed = Random.Range(0.9f, 1f);
+
+		int skin = Random.Range(1, sprites.Count);
+		for(int i = 0; i < sprites.Count; i++)
+		{
+			sprites[i].SetActive(i == skin);
+		}
+
+		timeToLeave_current = timeToLeave;
+	}
+
+	void UpdateWarningVisibility()
+	{
+		warning.gameObject.SetActive(isProximity);
+	}
+
+	void UpdateProximityDetection()
+	{
 		isProximity = false;
 		for(int i = 0; i < PersonManager.Instance.slots.Count; i++)
 		{
 			var otherPerson = PersonManager.Instance.slots[i].person;
-				
+
 			if(otherPerson && otherPerson != this)
 			{
 				var dist = Vector2.Distance(
-					transform.position, 
+					transform.position,
 					otherPerson.transform.position
 				);
 
@@ -80,10 +98,6 @@ public class Person : MonoBehaviour {
 				}
 			}
 		}
-
-		warning.gameObject.SetActive(isProximity);
-
-		canBeDragged_last = canBeDragged;
 	}
 
 	void UpdateDragInput () {

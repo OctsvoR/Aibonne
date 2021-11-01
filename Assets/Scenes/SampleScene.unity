@@ -1117,7 +1117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c05bd80720cea42af9a4848b7ebbb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timer: 60
+  timer: 30
   timer_current: 0
   timerText: {fileID: 746803381}
   endGameCanvas: {fileID: 577333518}

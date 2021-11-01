@@ -9,12 +9,4 @@ using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class Warning : MonoBehaviour {
-
-	void Start () {
-
-	}
-	
-	void Update () {
-
-	}
 }

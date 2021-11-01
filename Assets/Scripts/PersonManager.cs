@@ -21,11 +21,7 @@ public class PersonManager : MonoBehaviour {
 
 	public Person personPrefab;
 
-	public int personAmount = 6;
-
 	public List<Slot> slots;
-
-	public Canvas warningCanvas;
 
 	int personNumbering;
 
@@ -37,14 +33,6 @@ public class PersonManager : MonoBehaviour {
 		GenerateSlots (9);
 
 		StartCoroutine(SpawnPersonRoutine());
-	}
-
-	void Update()
-	{
-		//if(Input.GetKeyDown(KeyCode.Space))
-		//{
-		//	SpawnPerson();
-		//}
 	}
 
 	void SpawnPerson () {
