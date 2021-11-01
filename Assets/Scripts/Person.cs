@@ -15,7 +15,6 @@ public class Person : MonoBehaviour {
 	public bool doApproach;
 	public bool doLeave;
 	public bool isProximity;
-	public bool isProximity_last;
 	public bool canBeDragged;
 	public bool canBeDragged_last;
 
@@ -27,10 +26,7 @@ public class Person : MonoBehaviour {
 
 	public List<GameObject> sprites;
 
-	public List<Person> proximities = new List<Person> ();
-	public List<Person> proximities_last = new List<Person> ();
-
-	public List<Edge> edges = new List<Edge> ();
+	public Warning warning;
 
 	void Start () {
 		speed = Random.Range (0.9f, 1f);
@@ -59,10 +55,35 @@ public class Person : MonoBehaviour {
 		UpdateScreenRestriction ();
 		UpdateBehaviour ();
 		UpdateBehaviourTimer ();
-		UpdateProximityDetection ();
-		
+
+		isProximity = false;
+		for(int i = 0; i < PersonManager.Instance.slots.Count; i++)
+		{
+			var otherPerson = PersonManager.Instance.slots[i].person;
+				
+			if(otherPerson && otherPerson != this)
+			{
+				var dist = Vector2.Distance(
+					transform.position, 
+					otherPerson.transform.position
+				);
+
+				if(dist <= 1f)
+				{
+					if(
+						canBeDragged && otherPerson.canBeDragged &&
+						!isBeingDragged && !otherPerson.isBeingDragged
+					)
+					{
+						isProximity = true;
+					}
+				}
+			}
+		}
+
+		warning.gameObject.SetActive(isProximity);
+
 		canBeDragged_last = canBeDragged;
-		proximities_last = new List<Person> (proximities);
 	}
 
 	void UpdateDragInput () {
@@ -119,7 +140,7 @@ public class Person : MonoBehaviour {
 	}
 
 	void UpdateBehaviourTimer () {
-		if (isProximity || isBeingDragged)
+		if (isProximity || isBeingDragged) 
 			timeToLeave_current = timeToLeave;
 
 		if (!doApproach && !isProximity) {
@@ -133,47 +154,6 @@ public class Person : MonoBehaviour {
 
 		if (canBeDragged != canBeDragged_last && canBeDragged == true) {
 			StartCoroutine (AlternateHeadingRoutine ());
-		}
-	}
-
-	void UpdateProximityDetection () {
-		//int numFound = 0;
-
-		proximities.Clear ();
-		edges.Clear ();
-
-		for (int i = 0; i < PersonManager.Instance.slots.Count; i++) {
-			Person otherPerson = PersonManager.Instance.slots[i].person;
-
-			if (otherPerson && otherPerson != this) {
-				float dist = Vector2.Distance (
-					otherPerson.transform.position,
-					transform.position
-				);
-
-				if (dist <= 1f) {
-					if (canBeDragged && otherPerson.canBeDragged &&
-						!isBeingDragged && !otherPerson.isBeingDragged
-					) {
-						if (otherPerson.proximities.Count > 0) {
-							for (int j = 0; j < otherPerson.proximities.Count; j++) {
-								if (otherPerson.proximities[j] != this) {
-									proximities.Add (PersonManager.Instance.slots[i].person);
-								}
-							}
-						} else {
-							proximities.Add (PersonManager.Instance.slots[i].person);
-						}
-
-						isProximity = true;
-					}
-				}
-			}
-		}
-
-		for (int i = 0; i < proximities.Count; i++) {
-			Edge edge = new Edge (this, proximities[i]);
-			edges.Add (edge);
 		}
 	}
 

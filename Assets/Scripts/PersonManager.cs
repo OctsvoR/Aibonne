@@ -26,11 +26,6 @@ public class PersonManager : MonoBehaviour {
 	public List<Slot> slots;
 
 	public Canvas warningCanvas;
-	public Warning warningPrefab;
-
-	public List<Edge> edges = new List<Edge> ();
-
-	public List<Warning> warnings = new List<Warning> ();
 
 	int personNumbering;
 
@@ -41,56 +36,15 @@ public class PersonManager : MonoBehaviour {
 	void Start () {
 		GenerateSlots (9);
 
-		StartCoroutine (ResetProximityFlagRoutine ());
-		//StartCoroutine (SpawnPersonRoutine ());
+		StartCoroutine(SpawnPersonRoutine());
 	}
 
-	void Update () {
-		CalculateProximities ();
-
-		if (edges.Count > 0)
-			edges.Clear ();
-
-		for (int i = 0; i < slots.Count; i++) {
-			if (slots[i].person) {
-				edges = edges.Union (slots[i].person.edges).ToList ();
-			}
-		}
-
-		if (warnings.Count < edges.Count) {
-			Warning warning = Instantiate (warningPrefab, Vector3.zero, Quaternion.identity);
-			warning.transform.SetParent (warningCanvas.transform);
-
-			warnings.Add (warning);
-
-			warnings[warnings.Count - 1].edge = edges[edges.Count - 1];
-			edges[edges.Count - 1].warning = warnings[warnings.Count - 1];
-		} else if (warnings.Count > edges.Count) {
-			Destroy (warnings[warnings.Count - 1].gameObject);
-			warnings.RemoveAt (warnings.Count - 1);
-		}
-
-		#region comment
-		//} else if (warnings.Count > edges.Count) {
-		//	warnings.rem
+	void Update()
+	{
+		//if(Input.GetKeyDown(KeyCode.Space))
+		//{
+		//	SpawnPerson();
 		//}
-
-		//for (int i = 0; i < edges.Count - 1; i++) {
-		//	for (int j = i + 1; j < edges.Count; j++) {
-		//		if (edges[i].from == edges[j].to && edges[i].to == edges[j].from) {
-		//			edges.RemoveAt (j);
-		//		}
-		//	}
-		//}
-
-		//for (int i = 0; i < edges.Count; i++) {
-		//	Button warning = Instantiate (warningPrefab, Vector3.zero, Quaternion.identity);
-		//}
-		#endregion
-
-		if(Input.GetKeyDown (KeyCode.Space)) {
-			SpawnPerson ();
-		}
 	}
 
 	void SpawnPerson () {
@@ -109,7 +63,7 @@ public class PersonManager : MonoBehaviour {
 
 			Person person = Instantiate (
 				personPrefab,
-				new Vector3 (-5.605f, floor == 0 ? -1.595f : -1.595f/*0.845f*/, 0f),
+				new Vector3 (-5.605f, floor == 0 ? -1.595f : 0.845f, 0f),
 				Quaternion.identity
 			);
 
@@ -117,7 +71,7 @@ public class PersonManager : MonoBehaviour {
 
 			int r = FindEmptySlotId ();
 			slots[r].person = person;
-			person.standpoint = slots[r].standpoint /*+ Random.Range (-0.2f, 0.2f)*/;
+			person.standpoint = slots[r].standpoint /*+ Random.Range(-0.2f, 0.2f)*/;
 
 			personNumbering++;
 		}
@@ -138,43 +92,6 @@ public class PersonManager : MonoBehaviour {
 			Slot slot = new Slot ();
 			slot.standpoint = -amount / 2 + i * 0.8f;
 			slots.Add (slot);
-		}
-	}
-
-	void CalculateProximities () {
-		//for (int i = 0; i < slotList.Count; i++) {
-		//	for (int j = i; j < slotList.Count; j++) {
-		//		if (slotList[i].person && slotList[j].person) {
-		//			if (slotList[i].person != slotList[j].person) {
-		//				float dist = Vector3.Distance (
-		//					slotList[i].person.transform.position,
-		//					slotList[j].person.transform.position
-		//				);
-
-		//				if (dist <= 1f) {
-		//					if (
-		//						slotList[i].person.canBeDragged && slotList[j].person.canBeDragged &&
-		//						!slotList[i].person.isBeingDragged && !slotList[j].person.isBeingDragged
-		//					) {
-		//						Debug.DrawLine (slotList[i].person.transform.position, slotList[j].person.transform.position, Color.yellow);
-		//						slotList[i].person.isProximity = true;
-		//						slotList[j].person.isProximity = true;
-		//					}
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
-	}
-
-	IEnumerator ResetProximityFlagRoutine () {
-		for (; ; ) {
-			for (int i = 0; i < slots.Count; i++) {
-				if (slots[i].person) {
-					slots[i].person.isProximity = false;
-				}
-			}
-			yield return new WaitForSeconds (0.1f);
 		}
 	}
 
