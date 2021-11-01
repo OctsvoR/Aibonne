@@ -1121,6 +1121,31 @@ MonoBehaviour:
   timer_current: 0
   timerText: {fileID: 746803381}
   endGameCanvas: {fileID: 577333518}
+  isQuiz: 0
+  currentQuizPage: 0
+  questionAnswersBank:
+  - question: a
+    rightAnswer: 0
+  - question: b
+    rightAnswer: 1
+  - question: c
+    rightAnswer: 1
+  - question: d
+    rightAnswer: 0
+  - question: e
+    rightAnswer: 1
+  - question: f
+    rightAnswer: 0
+  - question: g
+    rightAnswer: 1
+  - question: h
+    rightAnswer: 0
+  - question: i
+    rightAnswer: 0
+  - question: j
+    rightAnswer: 1
+  questionAnswers: []
+  result: 
 --- !u!4 &1544109850
 Transform:
   m_ObjectHideFlags: 0
@@ -1165,9 +1190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   personPrefab: {fileID: 1955959796477789566, guid: f69b46132f4ab5e4882a4393095ea6b1, type: 3}
-  personAmount: 6
   slots: []
-  warningCanvas: {fileID: 0}
 --- !u!4 &1565778816
 Transform:
   m_ObjectHideFlags: 0
