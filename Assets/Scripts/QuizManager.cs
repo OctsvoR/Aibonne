@@ -9,13 +9,19 @@ using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 using NaughtyAttributes;
 
-public class QuizManager : MonoBehaviour {
-
+public class QuizManager : MonoBehaviour
+{
+	public Canvas questionAnswerCanvas;
 	public Text questionText;
 
-	public Popup popup;
+	[Space]
+	public Canvas popupCanvas;
+	public Text popupText;
 
-	public int currentQuizPage;
+	[Space]
+	public Canvas endGameCanvas;
+
+	int currentQuizPage;
 
 	[Serializable]
 	public class QuestionAnswer
@@ -24,31 +30,25 @@ public class QuizManager : MonoBehaviour {
 		public int rightAnswer;
 	}
 
+	[Space]
 	public List<QuestionAnswer> questionAnswersBank;
-	public List<QuestionAnswer> questionAnswers;
-
-	[HorizontalLine(color: EColor.Gray)]
-	[ReadOnly]
-	public string message;
+	List<QuestionAnswer> questionAnswers = new List<QuestionAnswer>();
 
 	public enum Result
 	{
 		None,
 		Right,
-		Wrong,
-		End
+		Wrong
 	}
 
-	[Button(enabledMode: EButtonEnableMode.Playmode)]
 	public void AnswerYes()
 	{
-		message = Answer(1).ToString();
+		Answer(1);
 	}
 
-	[Button(enabledMode: EButtonEnableMode.Playmode)]
 	public void AnswerNo()
 	{
-		message = Answer(0).ToString();
+		Answer(0);
 	}
 
 	private void Start()
@@ -63,14 +63,14 @@ public class QuizManager : MonoBehaviour {
 
 	void ShowPopup(string message)
 	{
-		popup.gameObject.SetActive(true);
-		popup.text.text = message;
+		popupCanvas.gameObject.SetActive(true);
+		popupText.text = message;
 	}
 
 	void HidePopup()
 	{
-		popup.gameObject.SetActive(false);
-		popup.text.text = string.Empty;
+		popupCanvas.gameObject.SetActive(false);
+		popupText.text = string.Empty;
 	}
 
 	void UpdateTextUI()
@@ -101,20 +101,49 @@ public class QuizManager : MonoBehaviour {
 		if(currentQuizPage < 5)
 		{
 			result = CheckAnswer(answer) ? Result.Right : Result.Wrong;
-			//next page
-		}
-		else
-		{
-			result = Result.End;
+			StartCoroutine(NextQuizPageRoutine(result));
 		}
 
 		return result;
 	}
 
-	IEnumerator NextQuizPage()
+	string GetResultMessage (Result result)
 	{
-		ShowPopup("jawaban");
-		yield return new WaitForSeconds(3f);
+		string message = string.Empty;
+
+		switch(result)
+		{
+			case Result.None:
+				break;
+			case Result.Right:
+				message = "Benar!";
+				break;
+			case Result.Wrong:
+				message = "Salah!";
+				break;
+		}
+
+		return message;
+	}
+
+	IEnumerator NextQuizPageRoutine(Result result)
+	{
+		ShowPopup(GetResultMessage(result));
+
+		yield return new WaitForSeconds(1f);
+
 		currentQuizPage++;
+		if(currentQuizPage >= 5)
+		{
+			EndGame();
+		}
+
+		HidePopup();
+	}
+
+	void EndGame()
+	{
+		questionAnswerCanvas.gameObject.SetActive(false);
+		endGameCanvas.gameObject.SetActive(true);
 	}
 }

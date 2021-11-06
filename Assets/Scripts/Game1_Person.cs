@@ -9,49 +9,57 @@ using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 using System.Linq;
 
-public class Person : MonoBehaviour {
-
-	public bool isBeingDragged;
-	public bool doApproach;
-	public bool doLeave;
-	public bool isProximity;
-	public bool canBeDragged;
-	public bool canBeDragged_last;
-
-	float speed;
-	public float standpoint;
-
-	public float timeToLeave = 5f;
-	public float timeToLeave_current = 0f;
-
-	public List<GameObject> sprites;
-
+public class Game1_Person : MonoBehaviour
+{
 	public Warning warning;
 
-	void Start () {
+	[Space]
+	public List<GameObject> sprites;
+
+	bool isBeingDragged;
+	bool doApproach = true;
+	bool doLeave;
+	bool isProximity;
+	bool canBeDragged;
+	bool canBeDragged_last;
+
+	float speed;
+
+	[HideInInspector]
+	public float standpoint;
+
+	[Space]
+	public float timeToLeave = 5f;
+	float timeToLeave_current = 0f;
+
+	void Start()
+	{
 		Init();
 	}
 
-	void OnMouseDown () {
-		if (canBeDragged)
-			isBeingDragged = true;
-	}
-
-	void OnMouseUp () {
-		isBeingDragged = false;
-	}
-
-	void Update () {
+	void Update()
+	{
 		canBeDragged = !doApproach && !doLeave;
 
-		UpdateDragInput ();
-		UpdateScreenRestriction ();
-		UpdateBehaviour ();
-		UpdateBehaviourTimer ();
+		UpdateDragInput();
+		UpdateScreenRestriction();
+		UpdateBehaviour();
+		UpdateBehaviourTimer();
 		UpdateProximityDetection();
 		UpdateWarningVisibility();
 
 		canBeDragged_last = canBeDragged;
+	}
+
+	void OnMouseDown()
+	{
+		if(canBeDragged)
+			isBeingDragged = true;
+	}
+
+	void OnMouseUp()
+	{
+		isBeingDragged = false;
 	}
 
 	void Init()
@@ -75,9 +83,9 @@ public class Person : MonoBehaviour {
 	void UpdateProximityDetection()
 	{
 		isProximity = false;
-		for(int i = 0; i < PersonManager.Instance.slots.Count; i++)
+		for(int i = 0; i < Game1_PersonManager.Instance.slots.Count; i++)
 		{
-			var otherPerson = PersonManager.Instance.slots[i].person;
+			var otherPerson = Game1_PersonManager.Instance.slots[i].person;
 
 			if(otherPerson && otherPerson != this)
 			{
@@ -100,11 +108,13 @@ public class Person : MonoBehaviour {
 		}
 	}
 
-	void UpdateDragInput () {
-		if (canBeDragged && isBeingDragged) {
-			Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+	void UpdateDragInput()
+	{
+		if(canBeDragged && isBeingDragged)
+		{
+			Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-			transform.position = new Vector3 (
+			transform.position = new Vector3(
 				worldMousePosition.x,
 				transform.position.y,
 				transform.position.z
@@ -112,76 +122,88 @@ public class Person : MonoBehaviour {
 		}
 	}
 
-	void UpdateScreenRestriction () {
-		if (canBeDragged) {
-			transform.position = new Vector3 (
-				Mathf.Clamp (transform.position.x, -5.107f, 5.107f),
+	void UpdateScreenRestriction()
+	{
+		if(canBeDragged)
+		{
+			transform.position = new Vector3(
+				Mathf.Clamp(transform.position.x, -5.107f, 5.107f),
 				transform.position.y,
 				transform.position.z
 			);
 		}
 	}
 
-	void UpdateBehaviour () {
-		if (doApproach) {
-			transform.position = Vector2.MoveTowards (
+	void UpdateBehaviour()
+	{
+		if(doApproach)
+		{
+			transform.position = Vector2.MoveTowards(
 				transform.position,
-				new Vector2 (
+				new Vector2(
 					standpoint,
 					transform.position.y
 				), Time.deltaTime * speed
 			);
 
-			if (Mathf.Abs (transform.position.x - standpoint) == 0f)
+			if(Mathf.Abs(transform.position.x - standpoint) == 0f)
 				doApproach = false;
 		}
 
-		if (doLeave) {
-			transform.position = Vector2.MoveTowards (
+		if(doLeave)
+		{
+			transform.position = Vector2.MoveTowards(
 				transform.position,
-				new Vector2 (
+				new Vector2(
 					5.605f,
 					transform.position.y
 				), Time.deltaTime * speed
 			);
 
-			if (transform.position.x == 5.605f) {
-				Destroy (gameObject);
+			if(transform.position.x == 5.605f)
+			{
+				Destroy(gameObject);
 			}
 
 			isBeingDragged = false;
 		}
+
+		if(canBeDragged != canBeDragged_last && canBeDragged == true)
+		{
+			StartCoroutine(AlternateHeadingRoutine());
+		}
 	}
 
-	void UpdateBehaviourTimer () {
-		if (isProximity || isBeingDragged) 
+	void UpdateBehaviourTimer()
+	{
+		if(isProximity || isBeingDragged)
 			timeToLeave_current = timeToLeave;
 
-		if (!doApproach && !isProximity) {
+		if(!doApproach && !isProximity)
+		{
 			timeToLeave_current -= Time.deltaTime;
 
-			if (timeToLeave_current <= 0f) {
+			if(timeToLeave_current <= 0f)
+			{
 				doLeave = true;
 				timeToLeave_current = 0f;
 			}
 		}
-
-		if (canBeDragged != canBeDragged_last && canBeDragged == true) {
-			StartCoroutine (AlternateHeadingRoutine ());
-		}
 	}
 
-	IEnumerator AlternateHeadingRoutine () {
-		while (canBeDragged) {
-			yield return new WaitForSeconds (Random.Range (0.5f, 1.5f));
-			transform.localScale = new Vector3 (
-				-transform.localScale.x, 
-				transform.localScale.y, 
+	IEnumerator AlternateHeadingRoutine()
+	{
+		while(canBeDragged)
+		{
+			yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
+			transform.localScale = new Vector3(
+				-transform.localScale.x,
+				transform.localScale.y,
 				transform.localScale.z
 			);
 		}
 
-		transform.localScale = new Vector3 (
+		transform.localScale = new Vector3(
 			1f,
 			transform.localScale.y,
 			transform.localScale.z

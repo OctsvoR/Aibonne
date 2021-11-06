@@ -9,16 +9,32 @@ using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 using NaughtyAttributes;
 
-public class RealtimeManager : MonoBehaviour {
-
-	public float timer = 60f;
-	public float timer_current;
-
-	public Text timerText;
+public class GameManager : MonoBehaviour
+{
+	public static GameManager Instance { get; private set; }
 
 	public Canvas endGameCanvas;
 
-	
+	[HideInInspector]
+	public Text timerText;
+
+	public enum GameMode
+	{
+		Distance,
+		Mask
+	}
+
+	//[Space]
+	//public GameMode gameMode;
+
+	[Space]
+	public float timer = 60f;
+	float timer_current;
+
+	void Awake()
+	{
+		Instance = this;
+	}
 
 	void Start () {
 		timer_current = timer;

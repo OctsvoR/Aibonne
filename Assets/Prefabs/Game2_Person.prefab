@@ -590,10 +590,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1955959796477789567}
-  - component: {fileID: 1955959796477789566}
   - component: {fileID: 5197687911377064657}
+  - component: {fileID: 7577718007425860665}
   m_Layer: 0
-  m_Name: Person
+  m_Name: Game2_Person
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -625,39 +625,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1955959796477789566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1955959796477789564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2714151f5885594ea940116c3d2080b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isBeingDragged: 0
-  doApproach: 1
-  doLeave: 0
-  isProximity: 0
-  canBeDragged: 0
-  canBeDragged_last: 0
-  standpoint: 0
-  timeToLeave: 5
-  timeToLeave_current: 0
-  sprites:
-  - {fileID: 229051105874727350}
-  - {fileID: 8828800784413573088}
-  - {fileID: 1774420382889025091}
-  - {fileID: 4539824886680577135}
-  - {fileID: 2022097965712830935}
-  - {fileID: 4422637231274977595}
-  - {fileID: 6223228361723533723}
-  - {fileID: 7068222150227877676}
-  - {fileID: 1792779432634371575}
-  - {fileID: 6187998223240404298}
-  warning: {fileID: 7728249273778447522}
 --- !u!61 &5197687911377064657
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -684,6 +651,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7577718007425860665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955959796477789564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b93a93499c80c3148bc198f5fd69e4d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  warning: {fileID: 7728249273778447522}
+  doApproach: 1
+  standpoint: 0
 --- !u!1 &2022097965712830935
 GameObject:
   m_ObjectHideFlags: 0
