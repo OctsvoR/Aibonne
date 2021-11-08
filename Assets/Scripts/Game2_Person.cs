@@ -12,6 +12,10 @@ public class Game2_Person : MonoBehaviour {
 
 	public Warning warning;
 
+	[Space]
+	public List<GameObject> sprites;
+	public List<GameObject> unmaskedSprites;
+
 	public bool doApproach = true;
 	bool doLeave;
 	bool canBeDragged;
@@ -24,6 +28,8 @@ public class Game2_Person : MonoBehaviour {
 	[HideInInspector]
 	public float standpoint;
 
+	int activeSkin = 0;
+
 	void Start () {
 		Init();
 	}
@@ -32,6 +38,8 @@ public class Game2_Person : MonoBehaviour {
 	{
 		canBeDragged = !doApproach && !doLeave;
 
+		warning.gameObject.SetActive(canBeDragged);
+
 		UpdateBehaviour();
 
 		canBeDragged_last = canBeDragged;
@@ -39,25 +47,33 @@ public class Game2_Person : MonoBehaviour {
 
 	private void OnMouseDown()
 	{
+		if(EventSystem.current.IsPointerOverGameObject()) return;
+
 		if(!hasMask) GiveMask();
-	}
-
-	private void OnMouseUp()
-	{
-
 	}
 
 	void Init()
 	{
 		speed = Random.Range(0.9f, 1f);
+
+		activeSkin = Random.Range(0, sprites.Count);
+		unmaskedSprites[activeSkin].SetActive(true);
 	}
 
 	void GiveMask()
 	{
 		if(canBeDragged)
 		{
+			unmaskedSprites[activeSkin].SetActive(false);
+			sprites[activeSkin].SetActive(true);
+
 			hasMask = true;
 			doLeave = true;
+
+			Game2_PersonManager.Instance.maskedPersonCount++;
+
+			if(Game2_PersonManager.Instance.maskedPersonCount >= 10)
+				GameManager.Instance.EndGame();
 		}
 	}
 
@@ -79,15 +95,21 @@ public class Game2_Person : MonoBehaviour {
 
 		if(doLeave)
 		{
+			transform.localScale = new Vector3(
+				1f,
+				transform.localScale.y,
+				transform.localScale.z
+			);
+
 			transform.position = Vector2.MoveTowards(
 				transform.position,
 				new Vector2(
-					5.605f,
+					3.8f,
 					transform.position.y
 				), Time.deltaTime * speed
 			);
 
-			if(transform.position.x == 5.605f)
+			if(transform.position.x == 3.8f)
 			{
 				Destroy(gameObject);
 			}

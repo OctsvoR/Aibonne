@@ -19,7 +19,9 @@ public class Game1_Person : MonoBehaviour
 	bool isBeingDragged;
 	bool doApproach = true;
 	bool doLeave;
-	bool isProximity;
+
+	[HideInInspector]
+	public bool isProximity;
 	bool canBeDragged;
 	bool canBeDragged_last;
 
@@ -53,6 +55,8 @@ public class Game1_Person : MonoBehaviour
 
 	void OnMouseDown()
 	{
+		if(EventSystem.current.IsPointerOverGameObject()) return;
+
 		if(canBeDragged)
 			isBeingDragged = true;
 	}
@@ -152,6 +156,12 @@ public class Game1_Person : MonoBehaviour
 
 		if(doLeave)
 		{
+			transform.localScale = new Vector3(
+				1f,
+				transform.localScale.y,
+				transform.localScale.z
+			);
+
 			transform.position = Vector2.MoveTowards(
 				transform.position,
 				new Vector2(

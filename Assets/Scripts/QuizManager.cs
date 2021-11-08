@@ -16,12 +16,13 @@ public class QuizManager : MonoBehaviour
 
 	[Space]
 	public Canvas popupCanvas;
-	public Text popupText;
 
 	[Space]
-	public Canvas endGameCanvas;
+	public Canvas endQuizCanvas;
 
 	int currentQuizPage;
+
+	int score;
 
 	[Serializable]
 	public class QuestionAnswer
@@ -64,13 +65,11 @@ public class QuizManager : MonoBehaviour
 	void ShowPopup(string message)
 	{
 		popupCanvas.gameObject.SetActive(true);
-		popupText.text = message;
 	}
 
 	void HidePopup()
 	{
 		popupCanvas.gameObject.SetActive(false);
-		popupText.text = string.Empty;
 	}
 
 	void UpdateTextUI()
@@ -101,6 +100,10 @@ public class QuizManager : MonoBehaviour
 		if(currentQuizPage < 5)
 		{
 			result = CheckAnswer(answer) ? Result.Right : Result.Wrong;
+
+			if(result == Result.Right)
+				score++;
+
 			StartCoroutine(NextQuizPageRoutine(result));
 		}
 
@@ -128,22 +131,26 @@ public class QuizManager : MonoBehaviour
 
 	IEnumerator NextQuizPageRoutine(Result result)
 	{
-		ShowPopup(GetResultMessage(result));
+		if(result == Result.Wrong)
+		{
+			ShowPopup(GetResultMessage(result));
 
-		yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(1f);
+		}
 
 		currentQuizPage++;
 		if(currentQuizPage >= 5)
 		{
-			EndGame();
+			EndQuiz();
 		}
 
-		HidePopup();
+		if(result == Result.Wrong)
+			HidePopup();
 	}
 
-	void EndGame()
+	void EndQuiz()
 	{
 		questionAnswerCanvas.gameObject.SetActive(false);
-		endGameCanvas.gameObject.SetActive(true);
+		endQuizCanvas.gameObject.SetActive(true);
 	}
 }

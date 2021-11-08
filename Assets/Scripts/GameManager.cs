@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
 
 	public Canvas endGameCanvas;
 
-	[HideInInspector]
 	public Text timerText;
 
 	public enum GameMode
@@ -24,10 +23,11 @@ public class GameManager : MonoBehaviour
 		Mask
 	}
 
-	//[Space]
-	//public GameMode gameMode;
+	[Space]
+	public GameMode gameMode;
 
 	[Space]
+	public bool doUpdateTimer = true;
 	public float timer = 60f;
 	float timer_current;
 
@@ -41,11 +41,21 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void Update () {
-		UpdateGameTimer ();
-		UpdateUI ();
+		if (gameMode == GameMode.Distance)
+		{
+			if(doUpdateTimer)
+			{
+				UpdateGameTimer();
+				UpdateGameTimerUI();
+			}
+		} 
+		else
+		{
+			UpdateMaskedPersonCountUI();
+		}
 	}
 
-	void EndGame () {
+	public void EndGame () {
 		Time.timeScale = 0f;
 		endGameCanvas.gameObject.SetActive (true);
 	}
@@ -60,7 +70,12 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	void UpdateUI () {
+	void UpdateGameTimerUI () {
 		timerText.text = (int)timer_current + "s";
+	}
+
+	void UpdateMaskedPersonCountUI()
+	{
+		timerText.text = Game2_PersonManager.Instance.maskedPersonCount + " orang";
 	}
 }

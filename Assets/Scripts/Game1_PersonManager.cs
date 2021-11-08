@@ -41,6 +41,27 @@ public class Game1_PersonManager : MonoBehaviour {
 		StartCoroutine(SpawnPersonRoutine());
 	}
 
+	private void Update()
+	{
+		GameManager.Instance.doUpdateTimer = !IsProximityDetected();
+	}
+
+	bool IsProximityDetected()
+	{
+		bool result = false;
+
+		for(int i = 0; i < slots.Count; i++)
+		{
+			if(slots[i].person && slots[i].person.isProximity)
+			{
+				result = true;
+				break;
+			}
+		}
+
+		return result;
+	}
+
 	void SpawnPerson()
 	{
 		int filledSlotAmount = 0;
