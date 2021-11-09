@@ -71,7 +71,7 @@ public class Game2_PersonManager : MonoBehaviour {
 		{
 			Game2_Person person = Instantiate(
 				personPrefab,
-				new Vector3(-3.8f, -1.595f),
+				new Vector3(-3.8f, -1.595f + Random.Range(-0.5f, 0.2f)),
 				Quaternion.identity
 			);
 
