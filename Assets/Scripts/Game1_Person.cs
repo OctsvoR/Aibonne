@@ -41,6 +41,9 @@ public class Game1_Person : MonoBehaviour
 
 	void Update()
 	{
+		if(GameManager.Instance.doPause)
+			return;
+
 		canBeDragged = !doApproach && !doLeave;
 
 		UpdateDragInput();
@@ -55,6 +58,9 @@ public class Game1_Person : MonoBehaviour
 
 	void OnMouseDown()
 	{
+		if(GameManager.Instance.doPause)
+			return;
+
 		if(EventSystem.current.IsPointerOverGameObject()) return;
 
 		if(canBeDragged)
@@ -63,6 +69,9 @@ public class Game1_Person : MonoBehaviour
 
 	void OnMouseUp()
 	{
+		if(GameManager.Instance.doPause)
+			return;
+
 		isBeingDragged = false;
 	}
 

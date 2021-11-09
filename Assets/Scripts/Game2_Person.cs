@@ -36,6 +36,9 @@ public class Game2_Person : MonoBehaviour {
 	
 	void Update ()
 	{
+		if(GameManager.Instance.doPause)
+			return;
+
 		canBeDragged = !doApproach && !doLeave;
 
 		warning.gameObject.SetActive(canBeDragged);
@@ -47,6 +50,9 @@ public class Game2_Person : MonoBehaviour {
 
 	private void OnMouseDown()
 	{
+		if(GameManager.Instance.doPause)
+			return;
+
 		if(EventSystem.current.IsPointerOverGameObject()) return;
 
 		if(!hasMask) GiveMask();

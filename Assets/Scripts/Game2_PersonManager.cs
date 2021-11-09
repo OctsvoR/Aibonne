@@ -52,6 +52,9 @@ public class Game2_PersonManager : MonoBehaviour {
 
 	void SpawnPerson()
 	{
+		if(GameManager.Instance.doPause)
+			return;
+
 		int filledSlotAmount = 0;
 
 		for(int i = 0; i < slots.Count; i++)

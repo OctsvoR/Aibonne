@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 
 	public Text timerText;
 
+	public bool doPause;
+
 	public enum GameMode
 	{
 		Distance,
@@ -56,7 +58,8 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void EndGame () {
-		Time.timeScale = 0f;
+		doPause = true;
+
 		endGameCanvas.gameObject.SetActive (true);
 	}
 

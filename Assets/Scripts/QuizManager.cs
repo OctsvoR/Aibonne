@@ -19,6 +19,7 @@ public class QuizManager : MonoBehaviour
 
 	[Space]
 	public Canvas endQuizCanvas;
+	public Text endTextCanvas;
 
 	int currentQuizPage;
 
@@ -152,5 +153,6 @@ public class QuizManager : MonoBehaviour
 	{
 		questionAnswerCanvas.gameObject.SetActive(false);
 		endQuizCanvas.gameObject.SetActive(true);
+		endTextCanvas.text = $"<size=56>kuis selesai</size>\nbenar {score} / 5";
 	}
 }
