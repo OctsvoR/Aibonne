@@ -22,6 +22,7 @@ public class Game2_Person : MonoBehaviour {
 	bool canBeDragged_last;
 
 	bool hasMask;
+	bool alreadyMasked;
 
 	float speed;
 
@@ -29,6 +30,10 @@ public class Game2_Person : MonoBehaviour {
 	public float standpoint;
 
 	int activeSkin = 0;
+
+	[Space]
+	public float timeToLeave = 5f;
+	float timeToLeave_current = 0f;
 
 	void Start () {
 		Init();
@@ -41,9 +46,11 @@ public class Game2_Person : MonoBehaviour {
 
 		canBeDragged = !doApproach && !doLeave;
 
-		warning.gameObject.SetActive(canBeDragged);
+		if(!alreadyMasked)
+			warning.gameObject.SetActive(canBeDragged);
 
 		UpdateBehaviour();
+		UpdateBehaviourTimer();
 
 		canBeDragged_last = canBeDragged;
 	}
@@ -51,6 +58,9 @@ public class Game2_Person : MonoBehaviour {
 	private void OnMouseDown()
 	{
 		if(GameManager.Instance.doPause)
+			return;
+
+		if(alreadyMasked)
 			return;
 
 		if(EventSystem.current.IsPointerOverGameObject()) return;
@@ -63,7 +73,23 @@ public class Game2_Person : MonoBehaviour {
 		speed = Random.Range(0.9f, 1f);
 
 		activeSkin = Random.Range(0, sprites.Count);
-		unmaskedSprites[activeSkin].SetActive(true);
+
+		int maskedRandom = Random.Range(0, 2);
+		alreadyMasked = maskedRandom == 1;
+
+		switch(maskedRandom)
+		{
+			case 0:
+				sprites[activeSkin].SetActive(false);
+				unmaskedSprites[activeSkin].SetActive(true);
+				break;
+			case 1:
+				sprites[activeSkin].SetActive(true);
+				unmaskedSprites[activeSkin].SetActive(false);
+				break;
+		}
+
+		timeToLeave_current = timeToLeave;
 	}
 
 	void GiveMask()
@@ -124,6 +150,22 @@ public class Game2_Person : MonoBehaviour {
 		if(canBeDragged != canBeDragged_last && canBeDragged == true)
 		{
 			StartCoroutine(AlternateHeadingRoutine());
+		}
+
+		transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.y);
+	}
+
+	void UpdateBehaviourTimer()
+	{
+		if(alreadyMasked && !doApproach)
+		{
+			timeToLeave_current -= Time.deltaTime;
+
+			if(timeToLeave_current <= 0f)
+			{
+				doLeave = true;
+				timeToLeave_current = 0f;
+			}
 		}
 	}
 
