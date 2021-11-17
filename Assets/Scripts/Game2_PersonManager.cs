@@ -101,7 +101,7 @@ public class Game2_PersonManager : MonoBehaviour {
 	{
 		for(; ; )
 		{
-			if(personNumbering < 10)
+			if(maskedPersonCount < 10)
 			{
 				SpawnPerson();
 			}
